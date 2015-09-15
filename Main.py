@@ -2,7 +2,7 @@ __author__ = 'simsund'
 import socket
 
 server = "irc.chalmers.it" # Server
-channel = "#Irkkalon" # Channel
+channel = "Irkkalon" # Channel
 botnick = "Merlin" # Your bots nick
 
 def ping(): # This is our first function! It will respond to server Pings.
@@ -20,9 +20,9 @@ def hello(newnick): # This function responds to a user that inputs "Hello Mybot"
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-ircsock.connect((server, 22)) # Here we connect to the server using port 22
+ircsock.connect((server, 6667)) # Here we connect to the server using port 22
 
-ircsock.send("USER "+ botnick +" "+ botnick +" "+ botnick + "\n") # user authentication
+ircsock.send("USER "+ botnick +" "+ botnick +" "+ botnick + "AvalonBot \n") # user authentication
 
 ircsock.send("NICK "+ botnick +"\n") # here we actually assign the nick to the bot
 
