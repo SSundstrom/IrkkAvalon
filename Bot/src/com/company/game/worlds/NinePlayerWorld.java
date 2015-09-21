@@ -6,9 +6,9 @@ import com.company.game.Quest;
 import java.util.LinkedList;
 
 
-public class EightPlayerWorld extends AbstractWorld {
+public class NinePlayerWorld extends AbstractWorld {
 
-    public EightPlayerWorld(){
+    public NinePlayerWorld(){
         super();
         this.quests = new LinkedList<>();
         this.quests.add(new Quest(1, 3, 1));
@@ -17,5 +17,6 @@ public class EightPlayerWorld extends AbstractWorld {
         this.quests.add(new Quest(4, 5, 2));
         this.quests.add(new Quest(5, 5, 1));
     }
+
 
 }

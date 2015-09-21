@@ -10,15 +10,11 @@ public class AvalonGameController {
     }
 
     public void addPlayer(String nick) {
-        if (!game.isFullPlayers()) {
             game.addPlayer(nick);
-        }
     }
 
     public void addRole(AbstractRole role) {
-        if (!game.isFullRoles()) {
             game.addRole(role);
-        }
     }
 
     public void startGame() {
@@ -36,6 +32,8 @@ public class AvalonGameController {
     public String currentKing() {
         return game.getKing().getNick();
     }
+
+
 
 
 }

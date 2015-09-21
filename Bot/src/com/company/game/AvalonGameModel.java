@@ -17,8 +17,7 @@ public class AvalonGameModel {
         this.world = world;
         this.players = new Player[amountPlayers];
         this.roles = new AbstractRole[amountPlayers];
-        addRole(new Merlin());
-        addRole(new Assasin());
+        addMerlinAssasin();
     }
 
     public AbstractWorld getWorld() {
@@ -87,6 +86,18 @@ public class AvalonGameModel {
     public void setKing(Player king) {
         this.king = king;
     }
+    public void showQuests() {
+        System.out.println("Quest");
+        for (Quest q : world.quests) {
+            System.out.print("Nr. " + q.getNumber() + " is " + q.getStatus() + " and require " + q.getNumberOfKnights() + " knights");
+            if (q.getNumberOfFails() == 2) {
+                System.out.println(" and need two fails");
+            } else {
+                System.out.println();
+            }
+        }
+    }
+
 
     public void selectQuest(Quest quest) {
         if (phase == Phase.DISCUSSION && world.getAvailableQuests().contains(quest)) {
@@ -94,29 +105,48 @@ public class AvalonGameModel {
         }
     }
 
+
+
     public boolean addPlayer(String nick) {
         if (phase == Phase.INNIT) {
             for (int i = 0; i < players.length; i++) {
                 if (players[i] == null) {
                     players[i] = new Player(nick);
+                    System.out.println("Added " + nick + " - " + (i+1) + " players");
                     return true;
+                } else if (players[i].getNick() == nick) {
+                    System.out.println("The name " + nick + " is already taken!");
+                    return false;
                 }
             }
+            System.out.println("Player list is full, pick a bigger map!");
+            return false;
         }
+        System.out.println("Wrong phase, can't add players in " + getPhase());
         return false;
     }
 
+    public void addMerlinAssasin() {
+        roles[0] = new Merlin();
+        roles[1] = new Assasin();
+    }
 
     public boolean addRole(AbstractRole role) {
         if (phase == Phase.INNIT) {
-            for (int i = 0; i < players.length; i++) {
-                if (role == roles[i] && role.isUniqe()) {
-                    return false;
-                } else if (roles[i] == null) {
+            for (int i = 2; i < players.length; i++) {
+                if (roles[i] == null) {
                     roles[i] = role;
+                    System.out.println("Added " + role.getName() + " - currently " + (i + 1) + " roles filled.");
                     return true;
+                } else if (role.getName() == roles[i].getName() && role.isUnique()) {
+                    System.out.println(role.getName() + " is unique! You can only have one");
+                    return false;
                 }
             }
+            System.out.println("Role list full, remove a role to add another.");
+            printRoles();
+            System.out.println();
+            return false;
         }
         return false;
     }
@@ -127,7 +157,7 @@ public class AvalonGameModel {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     public boolean isFullRoles() {
@@ -136,7 +166,7 @@ public class AvalonGameModel {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void distributeRoles () {
@@ -159,6 +189,19 @@ public class AvalonGameModel {
 
     public enum Phase {
         INNIT, DISCUSSION, VOTE, QUEST, ASSASINATION, GAMEOVER
+    }
+
+    public boolean printRoles() {
+        System.out.println("The current roles are");
+        for (int i = 0; i < roles.length; i++) {
+            if ( roles[i] == null) {
+                System.out.println();
+                return false;
+            }
+            System.out.println(roles[i].getName());
+        }
+        System.out.println();
+        return true;
     }
 }
 

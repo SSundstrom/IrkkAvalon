@@ -16,8 +16,8 @@ public abstract class AbstractWorld {
         return filtered;
     }
 
-    public List<Quest> getSuccededQuests() {
-        return AbstractWorld.getQuestsWithStatus(quests, Quest.Status.SUCCEDED);
+    public List<Quest> getSuccedeedQuests() {
+        return AbstractWorld.getQuestsWithStatus(quests, Quest.Status.SUCCEEDED);
     }
 
     public List<Quest> getFailedQuests() {
@@ -25,7 +25,7 @@ public abstract class AbstractWorld {
     }
 
     public List<Quest> getAvailableQuests() {
-        return AbstractWorld.getQuestsWithStatus(quests, Quest.Status.AVAILAVBLE);
+        return AbstractWorld.getQuestsWithStatus(quests, Quest.Status.AVAILABLE);
     }
 
 }

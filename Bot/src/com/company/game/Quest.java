@@ -2,8 +2,10 @@ package com.company.game;
 
 public class Quest {
     public enum Status {
-        FAILED, SUCCEDED, AVAILAVBLE
-    };
+        FAILED, SUCCEEDED, AVAILABLE
+    }
+
+    private int number;
 
     private int numberOfKnights;
 
@@ -23,21 +25,26 @@ public class Quest {
         return status;
     }
 
-    public Quest(int knights, int fails) {
+    public Quest(int nr, int knights, int fails) {
+        number = nr;
         numberOfFails = fails;
         numberOfKnights = knights;
-        status = Status.AVAILAVBLE;
+        status = Status.AVAILABLE;
+    }
+
+    public int getNumber() {
+        return this.number;
     }
 
     public void setFail() {
-        if (status == Status.AVAILAVBLE) {
+        if (status == Status.AVAILABLE) {
             status = Status.FAILED;
         }
     }
 
-    public void setSucceded() {
-        if (status == Status.AVAILAVBLE) {
-            status = Status.SUCCEDED;
+    public void setSucceeded() {
+        if (status == Status.AVAILABLE) {
+            status = Status.SUCCEEDED;
         }
     }
 
