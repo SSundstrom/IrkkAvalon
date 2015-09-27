@@ -2,6 +2,13 @@ package com.company.game.roles;
 
 public class Morgana extends AbstractRole {
     public Morgana() {
-        super("Morgana", true, false, true, true, true, false, true, true);
+        super("Morgana",    //Name
+                true,       //see Evil
+                false,      //see Merlin
+                true,       //see Mordred
+                true,       //seen as Evil
+                true,       //seen as Merlin
+                true,       //get to vote fail
+                true);      //Unique
     }
 }

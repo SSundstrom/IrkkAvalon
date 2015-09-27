@@ -6,6 +6,10 @@ import java.util.List;
 public abstract class AbstractWorld {
     protected List<Quest> quests;
 
+    public List<Quest> getQuests() {
+        return quests;
+    }
+
     private static List<Quest> getQuestsWithStatus(List<Quest> quests, Quest.Status status) {
         List<Quest> filtered = new LinkedList<>();
         for (Quest q : quests) {
@@ -26,6 +30,10 @@ public abstract class AbstractWorld {
 
     public List<Quest> getAvailableQuests() {
         return AbstractWorld.getQuestsWithStatus(quests, Quest.Status.AVAILABLE);
+    }
+
+    public Quest getQuest(int questNumber) {
+        return quests.get(questNumber - 1);
     }
 
 }

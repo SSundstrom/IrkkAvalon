@@ -4,20 +4,43 @@ import com.company.Utils.ArrayTools;
 import com.company.game.roles.AbstractRole;
 import com.company.game.roles.*;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Collections;
+
 public class AvalonGameModel {
     private AbstractWorld world;
     private Player[] players;
+    private List<Player> playerList;
     private Phase phase = Phase.INNIT;
-    private int kingCounter = 0;
+    private int kingCounter = 1;
     private AbstractRole[] roles;
     private Player king;
     private Adventure adventure;
+    private List<String> votes;
+    private List<List<String>> allVotes;
+    private List<String> questOutcome;
+    private List<List<String>> allQuestOutcomes;
 
     public AvalonGameModel(AbstractWorld world, int amountPlayers) {
         this.world = world;
         this.players = new Player[amountPlayers];
         this.roles = new AbstractRole[amountPlayers];
-        addMerlinAssasin();
+        this.allVotes = new LinkedList<>();
+        this.allQuestOutcomes = new LinkedList<>();
+        this.playerList = new LinkedList<>();
+        fillRoles();
+    }
+    public List<Player> getPlayerList() {
+        for (Player p : players) {
+         playerList.add(p);
+        }
+        return playerList;
+    }
+
+    public List<List<String>> getAllVotes() {
+        return allVotes;
     }
 
     public AbstractWorld getWorld() {
@@ -28,8 +51,19 @@ public class AvalonGameModel {
         return players;
     }
 
+    public List<List<String>> getAllQuestOutcomes() {
+        return allQuestOutcomes;
+    }
+
     public AbstractRole[] getRoles() {
         return roles;
+    }
+
+    public void showRoles() {
+        for (AbstractRole r : roles) {
+            System.out.print("   |   " + r.getName());
+        }
+        System.out.println("    |");
     }
 
     public Phase getPhase() {
@@ -49,12 +83,14 @@ public class AvalonGameModel {
     }
 
     public void resetKingCounter() {
-        this.kingCounter = 0;
+        this.kingCounter = 1;
     }
 
     public void incKingCounter() {
         if (kingCounter < 5) {
             kingCounter++;
+        } else {
+            setPhase(Phase.GAMEOVER);
         }
     }
 
@@ -86,25 +122,49 @@ public class AvalonGameModel {
     public void setKing(Player king) {
         this.king = king;
     }
+
     public void showQuests() {
         System.out.println("Quest");
         for (Quest q : world.quests) {
             System.out.print("Nr. " + q.getNumber() + " is " + q.getStatus() + " and require " + q.getNumberOfKnights() + " knights");
             if (q.getNumberOfFails() == 2) {
-                System.out.println(" and need two fails");
+                System.out.print(" and need two fails");
+            }
+            if (this.getAdventure() != null && adventure.getQuest() != null && q == adventure.getQuest()) {
+                System.out.println(" <-- Current Quest");
             } else {
                 System.out.println();
             }
         }
     }
 
-
-    public void selectQuest(Quest quest) {
-        if (phase == Phase.DISCUSSION && world.getAvailableQuests().contains(quest)) {
-            adventure = new Adventure(quest);
+    public boolean selectQuest(int quest) {
+        if (phase == Phase.DISCUSSION) {
+            if (quest - 1 < world.quests.size()) {
+                adventure = new Adventure(world.getQuest(quest));
+                System.out.println("Selected quest Nr. " + quest);
+                return true;
+            }
+            System.out.print("Choose a number from 1-5");
+            return false;
         }
+        System.out.println("Can't select Quest, wrong phase!");
+        return false;
     }
 
+    public Player selectPlayer(String nick) {
+        for (Player p : players) {
+            if (p.getNick().equals(nick)) {
+                return p;
+            }
+        }
+        System.out.println("Found no player with the nick : " + nick);
+        return selectPlayer(askPlayer());
+    }
+
+    public void getNominatedPlayersNick() {
+        adventure.getNicksInFellowship();
+    }
 
 
     public boolean addPlayer(String nick) {
@@ -112,7 +172,17 @@ public class AvalonGameModel {
             for (int i = 0; i < players.length; i++) {
                 if (players[i] == null) {
                     players[i] = new Player(nick);
-                    System.out.println("Added " + nick + " - " + (i+1) + " players");
+                    int j = 0;
+                    for (Player p : players) {
+                        if (p != null)
+                            j++;
+                    }
+                    System.out.print("Added " + nick + " - Now " + j);
+                    if (j == 1) {
+                        System.out.println(" Player");
+                    } else {
+                        System.out.println(" Players");
+                    }
                     return true;
                 } else if (players[i].getNick() == nick) {
                     System.out.println("The name " + nick + " is already taken!");
@@ -126,34 +196,81 @@ public class AvalonGameModel {
         return false;
     }
 
-    public void addMerlinAssasin() {
-        roles[0] = new Merlin();
-        roles[1] = new Assasin();
-    }
-
-    public boolean addRole(AbstractRole role) {
+    public boolean removePlayer(String nick) {
         if (phase == Phase.INNIT) {
-            for (int i = 2; i < players.length; i++) {
-                if (roles[i] == null) {
-                    roles[i] = role;
-                    System.out.println("Added " + role.getName() + " - currently " + (i + 1) + " roles filled.");
+            for (int i = 0; i < players.length; i++) {
+                if (players[i].getNick() == nick) {
+                    players[i] = null;
+                    int j = 0;
+                    for (Player p : players) {
+                        if (p != null)
+                            j++;
+                    }
+                    System.out.print("Removed " + nick + " - Now " + j);
+                    if (j == 1) {
+                        System.out.println(" Player");
+                    } else {
+                        System.out.println(" Players");
+                    }
                     return true;
-                } else if (role.getName() == roles[i].getName() && role.isUnique()) {
-                    System.out.println(role.getName() + " is unique! You can only have one");
+                } else if (players[i].getNick() == nick) {
+                    System.out.println("The name " + nick + " is already taken!");
+
+                    return true;
+                } else if (players[i] == null) {
+                    System.out.println(nick + " is not a valid name.");
                     return false;
                 }
             }
-            System.out.println("Role list full, remove a role to add another.");
-            printRoles();
-            System.out.println();
             return false;
         }
         return false;
     }
 
+    public void fillRoles() {
+        roles[0] = new Merlin();
+        System.out.println(roles[0].getName() + " added");
+        roles[1] = new Assasin();
+        System.out.println(roles[1].getName() + " added");
+        int good = 2;
+        int evil = 1;
+        switch (players.length) {
+            case 5 :
+                break;
+            case 6 :
+                good = 3;
+                break;
+            case 7 :
+                good = 3;
+                evil = 2;
+                break;
+            case 8 :
+                good = 4;
+                evil = 2;
+                break;
+            case 9 :
+                good = 5;
+                evil = 2;
+                break;
+            case 10 :
+                good = 5;
+                evil = 3;
+                break;
+        }
+        for (int j = 2; j < good + 2; j++) {
+            roles[j] = new Knight();
+            System.out.println(roles[j].getName() + " added");
+        }
+        for (int i = (good + 2); i < (evil + good + 2); i++) {
+            roles[i] = new Evil();
+            System.out.println(roles[i].getName() + " added");
+        }
+    }
+
     public boolean isFullPlayers() {
         for (Player p : players) {
             if (p == null) {
+                System.out.println("Player list not full");
                 return false;
             }
         }
@@ -163,28 +280,77 @@ public class AvalonGameModel {
     public boolean isFullRoles() {
         for (AbstractRole p : roles) {
             if (p == null) {
+                System.out.println("Role list not full");
                 return false;
             }
         }
         return true;
     }
 
-    public void distributeRoles () {
+    public void distributeRoles() {
         ArrayTools.shuffleArray(roles);
         for (int i = 0; i < players.length; i++) {
             players[i].setRole(roles[i]);
+            System.out.println("/msg " + players[i].getNick() + " : You are playing as " + roles[i].getName());
         }
     }
+
+    public void messageInfoToPlayers () {
+        List<String> evil = new LinkedList<>();
+        List<String> evilWithoutMordred = new LinkedList<>();
+        List<String> merlinOrMorgana = new LinkedList<>();
+        for (Player p : players) {
+            if (p.getRole().isSeenAsEvil()) {
+                evilWithoutMordred.add(p.getNick() + "\t");
+            }
+            if (p.getRole().isGetToVoteFail()) {
+                evil.add(p.getNick() + "\t");
+            }
+            if (p.getRole().isSeenAsMerlin()) {
+                merlinOrMorgana.add(p.getNick());
+            }
+        }
+
+        for (Player p : players) {
+            if (p.getRole().isSeeMordred()) {
+
+            }
+            if (p.getRole().isSeeEvil() && !p.getRole().getName().equals("Merlin")) {
+                System.out.print("/msg " + p.getNick() + " :\tThe evil players are  -  ");
+                printList(evil);
+                System.out.println();
+            }
+            if (p.getRole().getName().equals("Merlin")) {
+                System.out.print("/msg " + p.getNick() + " :\tThe evil players are  -  ");
+                printList(evilWithoutMordred);
+                System.out.println();
+            }
+            if (p.getRole().isSeeMerlin()) {
+                if (merlinOrMorgana.size() < 2) {
+                    System.out.println("/msg " + p.getNick() + " :\tMerlin is " + merlinOrMorgana.get(0));
+                } else {
+                    System.out.println("/msg " + p.getNick() + " :\t" + merlinOrMorgana.get(0) + " or " + merlinOrMorgana.get(1) + " is Merlin, the other Morgana");
+                }
+            }
+
+
+        }
+    }
+
     public void selectFirstKing() {
         if (phase == Phase.INNIT) {
             ArrayTools.shuffleArray(players);
             setKing(players[0]);
         }
     }
+
     public void nextKing() {
-        int index = java.util.Arrays.asList(players).indexOf(getKing());
-        index = (index + 1) % players.length;
-        setKing(players[index]);
+        if (phase == Phase.QUEST || phase == Phase.VOTE) {
+            int index = java.util.Arrays.asList(players).indexOf(getKing());
+            index = (index + 1) % players.length;
+            setKing(players[index]);
+            incKingCounter();
+        }
     }
 
     public enum Phase {
@@ -194,7 +360,7 @@ public class AvalonGameModel {
     public boolean printRoles() {
         System.out.println("The current roles are");
         for (int i = 0; i < roles.length; i++) {
-            if ( roles[i] == null) {
+            if (roles[i] == null) {
                 System.out.println();
                 return false;
             }
@@ -203,5 +369,193 @@ public class AvalonGameModel {
         System.out.println();
         return true;
     }
-}
 
+    public boolean addMemberToAdventure(String s) {
+        if (this.adventure != null) {
+            if (!adventure.getFellowship().contains(selectPlayer(s))
+                    && adventure.getFellowship().size() < adventure.getQuest().getNumberOfKnights()) {
+                Player p = selectPlayer(s);
+                adventure.addMember(p);
+                return true;
+            }
+            System.out.println("Could not add " + s + " to the fellowship");
+            return false;
+        }
+        System.out.println("Quest not initiated");
+        return false;
+    }
+    public boolean removeMemberFromAdventure(String s) {
+        if (phase == Phase.DISCUSSION && adventure.getFellowship().contains(selectPlayer(s))) {
+            Player p = selectPlayer(s);
+            adventure.removeMember(p);
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean addSpecialRole(String role) {
+        if (phase == Phase.INNIT) {
+            AbstractRole newRole = checkRole(role);
+            for (int i = 2; i < roles.length; i++) {
+                if (newRole.getClass() == Percival.class && roles[i].getClass() == Knight.class) {
+                    roles[i] = newRole;
+                    showRoles();
+                    return true;
+                } else if (roles[i].getClass() == Evil.class) {
+                    roles[i] = newRole;
+                    showRoles();
+                    return true;
+                }
+            }
+            System.out.println("Remove a special role first to add " + role);
+            showRoles();
+        }
+        return false;
+    }
+
+    private static AbstractRole checkRole(String role) {
+
+        switch (role.toUpperCase()) {
+            case "MORGANA":
+                return new Morgana();
+            case "MORDRED":
+                return new Mordred();
+            case "OBERON":
+                return new Mordred();
+            case "PERCIVAL":
+                return new Percival();
+            default:
+                System.out.println("The role" + role + "could not be added");
+        }
+        return null;
+    }
+    public void resetRole(String role){
+        AbstractRole roleToRemove = checkRole(role);
+        for (int i = 2; i < roles.length; i++) {
+            if (roleToRemove.isSeeMerlin() && roles[i].isSeeMerlin() ) {
+                roles[i] = new Knight();
+                showRoles();
+            } else if (roleToRemove.isSeeEvil() && roles[i].getClass() == roleToRemove.getClass()) {
+                roles[i] = new Evil();
+                showRoles();
+            }
+        }
+    }
+    public boolean askIfVoteSuccess() {
+        if (phase == Phase.VOTE) {
+            this.votes = new LinkedList<>();
+            votes.add("Nominated by " + king.getNick());
+            votes.add(showQuestsMini());
+            int success = 0;
+            for (int i = 0; i < players.length; i++) {
+                System.out.println("/msg " + players[i].getNick() + " : " + " Time to vote - Do you want to send ");
+                System.out.print("/msg " + players[i].getNick() + " : ");
+                getNominatedPlayersNick();
+                System.out.println("/msg " + players[i].getNick() + " :  on quest Nr. " + adventure.getQuest().getNumber() + "? Yes/No" );
+                String answer;
+                do {
+                    answer = askPlayer();
+                } while (!answer.toUpperCase().equals("YES") && !answer.toUpperCase().equals("NO"));
+                if (answer.toUpperCase().equals("YES")) {
+                    success++;
+                    votes.add(players[i].getNick() + " voted\tYES");
+                } else if (answer.toUpperCase().equals("NO")) {
+                    success--;
+                    votes.add(players[i].getNick() + " voted\tNO");
+                }
+            }
+            allVotes.add(votes);
+            printResults(votes);
+            return success > 0;
+        }
+        System.out.println("Fel i askIfVoteSuccess");
+        return false;
+    }
+    public String askPlayer() {
+        Scanner in = new Scanner(System.in);
+        String ans = in.next();
+        return ans;
+    }
+    public void printResults(List<String> list) {
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+    public void printList(List<String> list) {
+        for (String s : list) {
+            System.out.print(s);
+        }
+    }
+    public String showQuestsMini() {
+        String questStatus = "";
+        for (Quest q : world.getQuests()) {
+            if (adventure.getQuest() == q) {
+                questStatus += ">[ ]< ";
+            } else {
+                switch (q.getStatus()) {
+                    case AVAILABLE:
+                        questStatus += " [ ]  ";
+                        break;
+                    case SUCCEEDED:
+                        questStatus += " [O]  ";
+                        break;
+                    case FAILED:
+                        questStatus +=" [X]  ";
+                }
+            }
+        }
+        return questStatus;
+    }
+    public List<Player> getNominees() {
+        return adventure.getFellowship();
+    }
+
+    public boolean getQuestResults() {
+        this.questOutcome = new LinkedList<>();
+
+        int failes = 0;
+        for (Player p : getNominees()) {
+            if (p.getRole().isGetToVoteFail()) {
+                System.out.print("/msg " + p.getNick() + " : \tWant to vote Fail or Success?");
+                String answer;
+                do {
+                    answer = askPlayer();
+                } while (!answer.toUpperCase().equals("FAIL") && !answer.toUpperCase().equals("SUCCESS"));
+                if (answer.toUpperCase().equals("FAIL")) {
+                    failes++;
+                    questOutcome.add("Fail\t");
+                } else {
+                    questOutcome.add("Success\t");
+                }
+            } else {
+                System.out.println("/msg " + p.getNick() + " : \tYou can only vote success. Write yes when ready");
+                questOutcome.add("Success\t");
+                String answer;
+                do {
+                    answer = askPlayer();
+                } while (!answer.toUpperCase().equals("YES"));
+
+            }
+        }
+        if (failes >= adventure.getQuest().getNumberOfFails()) {
+            adventure.getQuest().setFail();
+        } else {
+            adventure.getQuest().setSucceeded();
+        }
+        Collections.shuffle(questOutcome);
+        questOutcome.add(0, "Quest nr " + adventure.getQuest().getNumber() + " outcome was");
+        printResults(questOutcome);
+        allQuestOutcomes.add(questOutcome);
+        return failes >= adventure.getQuest().getNumberOfFails();
+    }
+    public boolean isPlayer(String nick) {
+        boolean isPlayer = false;
+        for (Player p : playerList) {
+            if (p.getNick().equals(nick)) {
+                isPlayer = true;
+            }
+        }
+        return isPlayer;
+    }
+}

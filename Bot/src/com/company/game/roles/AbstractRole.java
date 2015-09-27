@@ -7,7 +7,6 @@ public abstract class AbstractRole {
     private boolean seeMordred = false;
     private boolean seenAsEvil = false;
     private boolean seenAsMerlin = false;
-    private boolean getToShootMerlin = false;
     private boolean getToVoteFail = false;
     private boolean unique = false;
 
@@ -21,7 +20,6 @@ public abstract class AbstractRole {
                         boolean seeMordred,
                         boolean seenAsEvil,
                         boolean seenAsMerlin,
-                        boolean getToShootMerlin,
                         boolean getToVoteFail,
                         boolean unique) {
 
@@ -31,7 +29,6 @@ public abstract class AbstractRole {
         this.seeMordred = seeMordred;
         this.seenAsEvil = seenAsEvil;
         this.seenAsMerlin = seenAsMerlin;
-        this.getToShootMerlin = getToShootMerlin;
         this.getToVoteFail = getToVoteFail;
         this.unique = unique;
     }
@@ -61,9 +58,6 @@ public abstract class AbstractRole {
         return seenAsMerlin;
     }
 
-    public boolean isGetToShootMerlin() {
-        return getToShootMerlin;
-    }
 
     public boolean isGetToVoteFail() {
         return getToVoteFail;

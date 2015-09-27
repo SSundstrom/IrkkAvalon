@@ -2,26 +2,24 @@ package com.company.game.Test;
 
 import com.company.game.*;
 import com.company.game.roles.*;
-import com.company.game.worlds.EightPlayerWorld;
-import com.company.game.worlds.FivePlayerWorld;
 
 public class TestAGM {
 
     public static void main(String[] args) {
 
-        AvalonGameModel worldA = AvalonGameFactory.createNewGame(8);
+        AvalonGameModel worldA = AvalonGameFactory.createNewGame(5);
 
         System.out.println("Is the roles list full? " + worldA.isFullRoles());
 
         System.out.println();
 
-        worldA.printRoles();
-        worldA.addRole(new Morgana());
-        worldA.addRole(new Percival());
-        worldA.addRole(new Morgana());
-        worldA.addRole(new Knight());
-        System.out.println();
-        worldA.addRole(new Knight());
+//        worldA.printRoles();
+//        worldA.addSpecialRole();
+//        worldA.addSpecialRole(new Percival());
+//        worldA.addSpecialRole(new Morgana());
+//        worldA.addSpecialRole(new Knight());
+//        System.out.println();
+//        worldA.addSpecialRole(new Knight());
 
         System.out.println();
 
@@ -32,6 +30,7 @@ public class TestAGM {
         worldA.addPlayer("P4");
         worldA.addPlayer("P5");
         worldA.addPlayer("P5");
+        worldA.addPlayer("P6");
 
         System.out.println();
 
@@ -39,19 +38,44 @@ public class TestAGM {
 
         System.out.println();
 
-        System.out.println(worldA.getPhase());
+        System.out.println("Startup phase = " + worldA.getPhase());
         worldA.setPhase(AvalonGameModel.Phase.ASSASINATION);
-        System.out.println(worldA.getPhase());
-        worldA.setPhase(AvalonGameModel.Phase.DISCUSSION);
-        System.out.println(worldA.getPhase());
+        System.out.println("After trying to switch to assassination, phase = " + worldA.getPhase());
 
+        System.out.println();
 
-        System.out.println(worldA.getWorld());
+        worldA.selectFirstKing();
+
+        System.out.println("The king is " + worldA.getKing().getNick());
+
         System.out.println();
 
         worldA.showQuests();
 
+        System.out.println();
+        worldA.selectQuest(1);
+        System.out.println("Current quest number  = " + worldA.getAdventure());
 
+        System.out.println();
+
+        System.out.println("Got " + worldA.selectPlayer("P2").getNick());
+
+        System.out.println();
+
+        worldA.addMemberToAdventure("P2");
+
+        System.out.println("After add member");
+
+
+        System.out.println();
+
+        System.out.println("King counter = " + worldA.getKingCounter());
+        worldA.incKingCounter();
+        System.out.println("King counter = " + worldA.getKingCounter());
+
+
+        worldA.setPhase(AvalonGameModel.Phase.DISCUSSION);
+        System.out.println(worldA.getPhase());
 
 
 
