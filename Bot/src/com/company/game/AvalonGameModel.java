@@ -188,7 +188,7 @@ public class AvalonGameModel {
                         System.out.println(" Players");
                     }
                     return true;
-                } else if (players[i].getNick() == nick) {
+                } else if (players[i].getNick().equals(nick)) {
                     System.out.println("The name " + nick + " is already taken!");
                     return false;
                 }

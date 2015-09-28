@@ -26,6 +26,21 @@ public class TestGame {
             gameA.addPlayer(sc.nextLine());
         }
 
+        do {
+            gameA.displayGameState();
+            System.out.println("What quest?");
+            if(gameA.selectQuest(gameA.getGame().askPlayer())) {
+                do {
+                    System.out.println("Who should join?");
+                    gameA.nominatePlayer(gameA.getGame().askPlayer());
+                } while (gameA.getGame().getAdventure().getFellowship().size()
+                        != gameA.getGame().getAdventure().getQuest().getNumberOfKnights());
+                gameA.goToVote();
+            }else{
+                System.out.println("Try selecting another quest");
+            }
+        } while (!gameA.getGame().gameOver());
+
 
     }
 
