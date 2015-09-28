@@ -14,7 +14,9 @@ public class AvalonGameModel {
     private Player[] players;
     private List<Player> playerList;
     private Phase phase = Phase.INNIT;
-    private int kingCounter = 1;
+
+
+    private int  nmbrOfInitPlayers, kingCounter = 1;
     private AbstractRole[] roles;
     private Player king;
     private Adventure adventure;
@@ -30,6 +32,7 @@ public class AvalonGameModel {
         this.allVotes = new LinkedList<>();
         this.allQuestOutcomes = new LinkedList<>();
         this.playerList = new LinkedList<>();
+        this.nmbrOfInitPlayers = 0;
         fillRoles();
     }
     public List<Player> getPlayerList() {
@@ -82,6 +85,7 @@ public class AvalonGameModel {
         return adventure;
     }
 
+
     public void resetKingCounter() {
         this.kingCounter = 1;
     }
@@ -93,6 +97,8 @@ public class AvalonGameModel {
             setPhase(Phase.GAMEOVER);
         }
     }
+
+
 
     public void setPhase(Phase phase) {
         switch (phase) {
@@ -172,13 +178,11 @@ public class AvalonGameModel {
             for (int i = 0; i < players.length; i++) {
                 if (players[i] == null) {
                     players[i] = new Player(nick);
-                    int j = 0;
-                    for (Player p : players) {
-                        if (p != null)
-                            j++;
-                    }
-                    System.out.print("Added " + nick + " - Now " + j);
-                    if (j == 1) {
+
+                    nmbrOfInitPlayers++;
+
+                    System.out.print("Added " + nick + " - Now " + nmbrOfInitPlayers);
+                    if (nmbrOfInitPlayers == 1) {
                         System.out.println(" Player");
                     } else {
                         System.out.println(" Players");
@@ -509,6 +513,12 @@ public class AvalonGameModel {
     }
     public List<Player> getNominees() {
         return adventure.getFellowship();
+    }
+
+
+    //Returns the amount of players that are initiated,
+    public int getNmbrOfInitPlayers() {
+        return nmbrOfInitPlayers;
     }
 
     public boolean getQuestResults() {
