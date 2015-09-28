@@ -558,4 +558,7 @@ public class AvalonGameModel {
         }
         return isPlayer;
     }
+    public boolean gameOver() {
+        return getPhase() == Phase.GAMEOVER;
+    }
 }

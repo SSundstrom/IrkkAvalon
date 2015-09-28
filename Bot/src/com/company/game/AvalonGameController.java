@@ -38,9 +38,14 @@ public class AvalonGameController {
         }
     }
 
-    public boolean selectQuest(int quest){
-        return game.selectQuest(quest);
-
+    public boolean selectQuest(String sQuest){
+        try {
+            int iQuest = Integer.parseInt(sQuest);
+            return game.selectQuest(iQuest);
+        } catch (IllegalArgumentException s) {
+            System.out.println("Not a valid quest number");
+            return false;
+        }
     }
     public boolean nominatePlayer(String s) {
         return game.addMemberToAdventure(s);
@@ -137,5 +142,6 @@ public class AvalonGameController {
     public void printQuest(int questNbr) {
         game.printResults(game.getAllQuestOutcomes().get(questNbr - 1));
     }
+
 
 }
