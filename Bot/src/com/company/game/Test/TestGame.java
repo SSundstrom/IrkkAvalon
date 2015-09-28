@@ -10,7 +10,10 @@ public class TestGame {
 
     public static void main (String [] args){
 
+        String a="asdf";
+        String b = "ASDF";
 
+        System.out.println(a.toLowerCase().equals(b.toLowerCase()));
 
         Scanner sc = new Scanner(System.in);
         int nrOfPlayers;

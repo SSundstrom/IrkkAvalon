@@ -3,6 +3,7 @@ package com.company.game;
 import com.company.Utils.ArrayTools;
 import com.company.game.roles.AbstractRole;
 import com.company.game.roles.*;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -176,6 +177,10 @@ public class AvalonGameModel {
     public boolean addPlayer(String nick) {
         if (phase == Phase.INNIT) {
             if(!nick.equals("")) {
+                if(Character.isLetter(nick.charAt(0))){
+
+
+
                 for (int i = 0; i < players.length; i++) {
                     if (players[i] == null) {
                         players[i] = new Player(nick);
@@ -189,15 +194,20 @@ public class AvalonGameModel {
                             System.out.println(" Players");
                         }
                         return true;
-                    } else if (players[i].getNick().equals(nick)) {
+
+                        //I
+                    } else if (players[i].getNick().toLowerCase().equals(nick.toLowerCase())) {
                         System.out.println("The name " + nick + " is already taken!");
                         return false;
                     }
                 }
                 System.out.println("Player list is full, pick a bigger map!");
                 return false;
+                }
+                System.out.println("Your name must start with a letter");
+                return false;
             }
-            System.out.println("Player names can't be \"\".");
+            System.out.println("Names can't be empty.");
             return false;
         }
         System.out.println("Wrong phase, can't add players in " + getPhase());
