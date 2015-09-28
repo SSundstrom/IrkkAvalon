@@ -472,7 +472,37 @@ public class AvalonGameModel {
                 getNominatedPlayersNick();
                 System.out.println("/msg " + players[i].getNick() + " :  on quest Nr. " + adventure.getQuest().getNumber() + "? Yes/No" );
                 String answer;
-                do {
+                while(true) {
+                    boolean hasAnswer=false;
+                    answer = askPlayer();
+
+                    switch (answer.toLowerCase()){
+
+                        case "yes":
+                        case "ja":
+                        case "y":
+                        case "j":
+                            hasAnswer=true;
+                            success++;
+                            votes.add(players[i].getNick() + " voted\tYES");
+                            break;
+                        case "no":
+                        case "n":
+                        case "nej":
+                            hasAnswer=true;
+                            success--;
+                            votes.add(players[i].getNick() + " voted\tNO");
+                            break;
+                        default:
+                            break;
+                    }
+                    if(hasAnswer==true){
+                        break;
+                    }
+                }
+                //Old code below with "do while" - loop and if statements
+                /*
+                do{
                     answer = askPlayer();
                 } while (!answer.toUpperCase().equals("YES") && !answer.toUpperCase().equals("NO"));
                 if (answer.toUpperCase().equals("YES")) {
@@ -482,6 +512,7 @@ public class AvalonGameModel {
                     success--;
                     votes.add(players[i].getNick() + " voted\tNO");
                 }
+                */
             }
             allVotes.add(votes);
             printResults(votes);
