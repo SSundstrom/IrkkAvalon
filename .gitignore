@@ -1,3 +1,13 @@
+# intellij files
+*.iml
+.idea/
+out/
+bot/.idea/
+bot/out/
+bot/Bot.iml
+javaBot/JavaBot.iml
+javaBot/.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
