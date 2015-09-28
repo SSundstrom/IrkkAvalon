@@ -12,7 +12,6 @@ public class AvalonGameController {
     }
 
     public boolean addPlayer(String nick) {
-
        return game.addPlayer(nick);
     }
     public boolean removePlayer(String nick) {
@@ -108,6 +107,7 @@ public class AvalonGameController {
             } else {
                 System.out.println("\t--- The Good Win ---");
             }
+            game.setPhase(AvalonGameModel.Phase.GAMEOVER);
         }
     }
 
