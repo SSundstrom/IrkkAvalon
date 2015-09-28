@@ -372,9 +372,9 @@ public class AvalonGameModel {
 
     public boolean addMemberToAdventure(String s) {
         if (this.adventure != null) {
-            if (!adventure.getFellowship().contains(selectPlayer(s))
+            Player p = selectPlayer(s);
+            if (!adventure.getFellowship().contains(p)
                     && adventure.getFellowship().size() < adventure.getQuest().getNumberOfKnights()) {
-                Player p = selectPlayer(s);
                 adventure.addMember(p);
                 return true;
             }
