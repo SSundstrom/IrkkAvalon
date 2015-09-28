@@ -175,25 +175,29 @@ public class AvalonGameModel {
 
     public boolean addPlayer(String nick) {
         if (phase == Phase.INNIT) {
-            for (int i = 0; i < players.length; i++) {
-                if (players[i] == null) {
-                    players[i] = new Player(nick);
+            if(!nick.equals("")) {
+                for (int i = 0; i < players.length; i++) {
+                    if (players[i] == null) {
+                        players[i] = new Player(nick);
 
-                    nmbrOfInitPlayers++;
+                        nmbrOfInitPlayers++;
 
-                    System.out.print("Added " + nick + " - Now " + nmbrOfInitPlayers);
-                    if (nmbrOfInitPlayers == 1) {
-                        System.out.println(" Player");
-                    } else {
-                        System.out.println(" Players");
+                        System.out.print("Added " + nick + " - Now " + nmbrOfInitPlayers);
+                        if (nmbrOfInitPlayers == 1) {
+                            System.out.println(" Player");
+                        } else {
+                            System.out.println(" Players");
+                        }
+                        return true;
+                    } else if (players[i].getNick().equals(nick)) {
+                        System.out.println("The name " + nick + " is already taken!");
+                        return false;
                     }
-                    return true;
-                } else if (players[i].getNick().equals(nick)) {
-                    System.out.println("The name " + nick + " is already taken!");
-                    return false;
                 }
+                System.out.println("Player list is full, pick a bigger map!");
+                return false;
             }
-            System.out.println("Player list is full, pick a bigger map!");
+            System.out.println("Player names can't be \"\".");
             return false;
         }
         System.out.println("Wrong phase, can't add players in " + getPhase());
