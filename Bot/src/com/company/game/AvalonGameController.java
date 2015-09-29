@@ -1,5 +1,8 @@
 package com.company.game;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class AvalonGameController {
     private AvalonGameModel game;
 
@@ -28,7 +31,7 @@ public class AvalonGameController {
         if (game.getPhase() == AvalonGameModel.Phase.INNIT) {
             if (game.isFullPlayers() && game.isFullRoles()) {
                 game.distributeRoles();
-                game.messageInfoToPlayers();
+                messageInfoToPlayers();
                 game.selectFirstKing();
                 game.setPhase(AvalonGameModel.Phase.DISCUSSION);
                 System.out.println("\n--- Started game ---\n");
@@ -48,7 +51,10 @@ public class AvalonGameController {
         }
     }
     public boolean nominatePlayer(String s) {
-        return game.addMemberToAdventure(s);
+        if (game.getAdventure() != null && game.getAdventure().getQuest() != null) {
+            return game.addMemberToAdventure(s);
+        }
+        return false;
     }
     public boolean removeNominatedPlayer(String s) {
         return game.removeMemberFromAdventure(s);
@@ -125,7 +131,7 @@ public class AvalonGameController {
         game.showQuests();
         if (game.getAdventure() != null) {
             System.out.println("Players currently nominated for quest: ");
-            game.getNominatedPlayersNick();
+            game.printNominatedPlayersNick();
         }
 
 
@@ -142,6 +148,49 @@ public class AvalonGameController {
     public void printQuest(int questNbr) {
         game.printResults(game.getAllQuestOutcomes().get(questNbr - 1));
     }
+
+    public void messageInfoToPlayers () {
+        List<String> evil = new LinkedList<>();
+        List<String> evilWithoutMordred = new LinkedList<>();
+        List<String> merlinOrMorgana = new LinkedList<>();
+        for (Player p : game.getPlayers()) {
+            if (p.getRole().isSeenAsEvil()) {
+                evilWithoutMordred.add(p.getNick() + "\t");
+            }
+            if (p.getRole().isGetToVoteFail()) {
+                evil.add(p.getNick() + "\t");
+            }
+            if (p.getRole().isSeenAsMerlin()) {
+                merlinOrMorgana.add(p.getNick());
+            }
+        }
+
+        for (Player p : game.getPlayers()) {
+            if (p.getRole().isSeeMordred()) {
+
+            }
+            if (p.getRole().isSeeEvil() && !p.getRole().getName().equals("Merlin")) {
+                System.out.print("/msg " + p.getNick() + " :\tThe evil players are  -  ");
+                game.printList(evil);
+                System.out.println();
+            }
+            if (p.getRole().getName().equals("Merlin")) {
+                System.out.print("/msg " + p.getNick() + " :\tThe evil players are  -  ");
+                game.printList(evilWithoutMordred);
+                System.out.println();
+            }
+            if (p.getRole().isSeeMerlin()) {
+                if (merlinOrMorgana.size() < 2) {
+                    System.out.println("/msg " + p.getNick() + " :\tMerlin is " + merlinOrMorgana.get(0));
+                } else {
+                    System.out.println("/msg " + p.getNick() + " :\t" + merlinOrMorgana.get(0) + " or " + merlinOrMorgana.get(1) + " is Merlin, the other Morgana");
+                }
+            }
+
+
+        }
+    }
+
 
 
 }

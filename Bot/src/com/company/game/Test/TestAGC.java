@@ -37,12 +37,14 @@ public class TestAGC {
             gameA.displayGameState();
             System.out.println("What quest?");
             gameA.selectQuest(gameA.getGame().askPlayer());
-            do {
-                System.out.println("Who should join?");
-                gameA.nominatePlayer(gameA.getGame().askPlayer());
-            } while (gameA.getGame().getAdventure().getFellowship().size()
-                    != gameA.getGame().getAdventure().getQuest().getNumberOfKnights());
-            gameA.goToVote();
+            if (gameA.getGame().getAdventure().getQuest() != null) {
+                do {
+                    System.out.println("Who should join?");
+                    gameA.nominatePlayer(gameA.getGame().askPlayer());
+                } while (gameA.getGame().getAdventure().getFellowship().size()
+                        != gameA.getGame().getAdventure().getQuest().getNumberOfKnights());
+                gameA.goToVote();
+            }
         } while (!gameA.getGame().gameOver());
     }
 
