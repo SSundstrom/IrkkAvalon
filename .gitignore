@@ -7,6 +7,10 @@ bot/out/
 bot/Bot.iml
 javaBot/JavaBot.iml
 javaBot/.idea
+Bot/.idea
+Bot/out/
+JavaBot/.idea
+JavaBot/JavaBot.iml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
