@@ -1,7 +1,6 @@
 package com.company.game.Test;
 
 import com.company.game.*;
-import com.company.game.roles.*;
 
 public class TestAGM {
 
