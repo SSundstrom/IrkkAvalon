@@ -118,8 +118,10 @@ public class AvalonGameModel {
                 }
                 break;
             case GAMEOVER:
-                this.setPhase(Phase.GAMEOVER);
-                break;
+                if (this.phase == Phase.ASSASINATION || this.phase == Phase.QUEST) {
+                    this.phase = phase;
+                    break;
+                }
         }
     }
 

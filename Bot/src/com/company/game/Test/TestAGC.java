@@ -1,9 +1,4 @@
-package com.company.game.Test;
-
 import com.company.game.*;
-import com.company.game.roles.*;
-import com.company.game.worlds.EightPlayerWorld;
-import com.company.game.worlds.FivePlayerWorld;
 
 public class TestAGC {
 
@@ -32,6 +27,7 @@ public class TestAGC {
         System.out.println("\n----- Part 2 -----\n");
 
         gameA.startGame();
+
 
         do {
             gameA.displayGameState();
