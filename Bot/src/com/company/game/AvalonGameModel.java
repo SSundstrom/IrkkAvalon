@@ -436,8 +436,9 @@ public class AvalonGameModel {
                 printNominatedPlayersNick();
                 System.out.println("/msg " + players[i].getNick() + " :  on quest Nr. " + adventure.getQuest().getNumber() + "? Yes/No");
                 String answer;
-                while(true) {
-                    boolean hasAnswer=false;
+                boolean hasAnswer=false;
+                while(!hasAnswer) {
+
                     answer = askPlayer();
 
                     switch (answer.toLowerCase()){
@@ -460,23 +461,7 @@ public class AvalonGameModel {
                         default:
                             break;
                     }
-                    if(hasAnswer==true){
-                        break;
-                    }
                 }
-                //Old code below with "do while" - loop and if statements
-                /*
-                do{
-                    answer = askPlayer();
-                } while (!answerYes.contains(answer.toUpperCase()) && !answerNo.contains(answer.toUpperCase()));
-                if (answerYes.contains(answer.toUpperCase())) {
-                    success++;
-                    votes.add(players[i].getNick() + " voted\tYES");
-                } else if (answerNo.contains(answer.toUpperCase())) {
-                    success--;
-                    votes.add(players[i].getNick() + " voted\tNO");
-                }
-                */
             }
             allVotes.add(votes);
             printResults(votes);
