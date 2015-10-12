@@ -3,6 +3,7 @@ package com.company.game;
 import com.company.Utils.ArrayTools;
 import com.company.game.roles.AbstractRole;
 import com.company.game.roles.*;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.*;
 
@@ -11,7 +12,9 @@ public class AvalonGameModel {
     private Player[] players;
     private List<Player> playerList;
     private Phase phase = Phase.INNIT;
-    private int kingCounter = 1;
+
+
+    private int  nmbrOfInitPlayers, kingCounter = 1;
     private AbstractRole[] roles;
     private Player king;
     private Adventure adventure;
@@ -27,6 +30,7 @@ public class AvalonGameModel {
         this.allVotes = new LinkedList<>();
         this.allQuestOutcomes = new LinkedList<>();
         this.playerList = new LinkedList<>();
+        this.nmbrOfInitPlayers = 0;
         this.answerYes = new ArrayList<>();
         answerYes.add("YES");answerYes.add("Y");answerYes.add("JA");answerYes.add("J");
         this.answerNo = new ArrayList<>();
@@ -83,6 +87,7 @@ public class AvalonGameModel {
         return adventure;
     }
 
+
     public void resetKingCounter() {
         this.kingCounter = 1;
     }
@@ -94,6 +99,8 @@ public class AvalonGameModel {
             setPhase(Phase.GAMEOVER);
         }
     }
+
+
 
     public void setPhase(Phase phase) {
         switch (phase) {
@@ -118,8 +125,10 @@ public class AvalonGameModel {
                 }
                 break;
             case GAMEOVER:
-                this.setPhase(Phase.GAMEOVER);
-                break;
+                if (this.phase == Phase.ASSASINATION || this.phase == Phase.QUEST) {
+                    this.phase = phase;
+                    break;
+                }
         }
     }
 
@@ -173,27 +182,38 @@ public class AvalonGameModel {
 
     public boolean addPlayer(String nick) {
         if (phase == Phase.INNIT) {
-            for (int i = 0; i < players.length; i++) {
-                if (players[i] == null) {
-                    players[i] = new Player(nick);
-                    int j = 0;
-                    for (Player p : players) {
-                        if (p != null)
-                            j++;
+            if(!nick.equals("")) {
+                if(Character.isLetter(nick.charAt(0))){
+
+
+
+                for (int i = 0; i < players.length; i++) {
+                    if (players[i] == null) {
+                        players[i] = new Player(nick);
+
+                        nmbrOfInitPlayers++;
+
+                        System.out.print("Added " + nick + " - Now " + nmbrOfInitPlayers);
+                        if (nmbrOfInitPlayers == 1) {
+                            System.out.println(" Player");
+                        } else {
+                            System.out.println(" Players");
+                        }
+                        return true;
+
+                        //I
+                    } else if (players[i].getNick().toLowerCase().equals(nick.toLowerCase())) {
+                        System.out.println("The name " + nick + " is already taken!");
+                        return false;
                     }
-                    System.out.print("Added " + nick + " - Now " + j);
-                    if (j == 1) {
-                        System.out.println(" Player");
-                    } else {
-                        System.out.println(" Players");
-                    }
-                    return true;
-                } else if (players[i].getNick() == nick) {
-                    System.out.println("The name " + nick + " is already taken!");
-                    return false;
                 }
+                System.out.println("Player list is full, pick a bigger map!");
+                return false;
+                }
+                System.out.println("Your name must start with a letter");
+                return false;
             }
-            System.out.println("Player list is full, pick a bigger map!");
+            System.out.println("Names can't be empty.");
             return false;
         }
         System.out.println("Wrong phase, can't add players in " + getPhase());
@@ -416,15 +436,31 @@ public class AvalonGameModel {
                 printNominatedPlayersNick();
                 System.out.println("/msg " + players[i].getNick() + " :  on quest Nr. " + adventure.getQuest().getNumber() + "? Yes/No");
                 String answer;
-                do {
+                boolean hasAnswer=false;
+                while(!hasAnswer) {
+
                     answer = askPlayer();
-                } while (!answerYes.contains(answer.toUpperCase()) && !answerNo.contains(answer.toUpperCase()));
-                if (answerYes.contains(answer.toUpperCase())) {
-                    success++;
-                    votes.add(players[i].getNick() + " voted\tYES");
-                } else if (answerNo.contains(answer.toUpperCase())) {
-                    success--;
-                    votes.add(players[i].getNick() + " voted\tNO");
+
+                    switch (answer.toLowerCase()){
+
+                        case "yes":
+                        case "ja":
+                        case "y":
+                        case "j":
+                            hasAnswer=true;
+                            success++;
+                            votes.add(players[i].getNick() + " voted\tYES");
+                            break;
+                        case "no":
+                        case "n":
+                        case "nej":
+                            hasAnswer=true;
+                            success--;
+                            votes.add(players[i].getNick() + " voted\tNO");
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             allVotes.add(votes);
@@ -471,6 +507,12 @@ public class AvalonGameModel {
     }
     public List<Player> getNominees() {
         return adventure.getFellowship();
+    }
+
+
+    //Returns the amount of players that are initiated,
+    public int getNmbrOfInitPlayers() {
+        return nmbrOfInitPlayers;
     }
 
     public boolean getQuestResults() {

@@ -1,9 +1,9 @@
 package com.company;
 
-import com.fridenmf.ircframework.core.events.OnConnectEvent;
-import com.fridenmf.ircframework.core.events.OnMessageEvent;
-import com.fridenmf.ircframework.core.extendable.IrcBot;
-import com.fridenmf.ircframework.core.extendable.IrcPlugin;
+import com.company.game.AvalonGameController;
+import com.company.game.AvalonGameFactory;
+import com.fridenmf.ircframework.core.events.*;
+import com.fridenmf.ircframework.core.extendable.*;
 
 public class MyBot extends IrcPlugin {
 
@@ -35,7 +35,17 @@ public class MyBot extends IrcPlugin {
     @Override
     public void onMessage(OnMessageEvent e) {
         super.onMessage(e);
-        sendMessage(e.getChannel(),"Hello!");
+        sendMessage(e.getChannel(), "Hello!");
+    }
+
+    @Override
+    public void onPrivateMessage(OnPrivateMessageEvent e) {
+        String[] message;
+        if (e.getMessage().contains("§NewGame")) {
+            message = e.getMessage().split(" - ");
+            int messageInt = Integer.parseInt(message[1]);
+            new AvalonGameController(AvalonGameFactory.createNewGame(messageInt));
+        }
     }
 }
 
