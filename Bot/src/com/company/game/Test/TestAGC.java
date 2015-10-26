@@ -1,6 +1,6 @@
 import com.company.game.*;
 
-public class TestAGC {
+/*public class TestAGC {
 
     public static void main(String[] args) {
 
@@ -45,3 +45,4 @@ public class TestAGC {
     }
 
 }
+*/

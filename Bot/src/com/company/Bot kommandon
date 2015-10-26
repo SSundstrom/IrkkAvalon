@@ -24,3 +24,83 @@
 §ShowLastQuest          -a / -m | default -m
 §ShowQuestNr "nr"       -a / -m | default -m
 §ShowGameState          -a / -m | default -m
+
+
+commented sections
+
+Var     rad
+------------
+
+
+-------------------------------- ControllerController
+package com.company.Bot;
+
+import com.company.game.AvalonGameController;
+import com.company.game.AvalonGameFactory;
+import com.fridenmf.ircframework.core.events.OnMessageEvent;
+import com.fridenmf.ircframework.core.events.OnPrivateMessageEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ControllerController{
+
+    private int avalonGameNumber;
+    private List<AvalonGameController> game;
+    private MyBot bot;
+
+
+    public ControllerController(MyBot bot) {
+        game = new ArrayList<>();
+        avalonGameNumber = 1;
+        this.bot = bot;
+    }
+
+
+    public void onPrivateMessage(OnPrivateMessageEvent e) {
+        String[] message;
+        String privateMessage = e.getMessage().toUpperCase();
+        if (privateMessage.contains("§NEWGAME")) {
+            message = e.getMessage().split("-");
+            int messageInt;
+            try {
+                messageInt = Integer.parseInt(message[1]);
+            } catch (NumberFormatException s) {
+                messageInt = 0;
+            }
+            if (messageInt < 5 || messageInt > 10) {
+                bot.sendPrivateMessage(e.getNick(), "Need to be between 5 and 10");
+            } else {
+                game.add(new AvalonGameController(AvalonGameFactory.createNewGame(messageInt)), avalonGameNumber, bot);
+                bot.sendPrivateMessage(e.getNick(), "Started " + messageInt + " player game");
+                bot.join("#AvalonGame" + avalonGameNumber);
+                bot.invite("#AvalonGame"+avalonGameNumber, e.getNick());
+            }
+        } else {
+            bot.sendPrivateMessage(e.getNick(), "Hello " + e.getNick() + ", these are the \"working\" commandos");
+            bot.sendPrivateMessage(e.getNick(), "§NewGame -\"Number of players\"              - Starts a new game");
+            bot.sendPrivateMessage(e.getNick(), "§Rules");
+
+        }
+    }
+    public void onMessage(OnMessageEvent e) {
+        for (AvalonGameController AVG : game) {
+            if (e.getChannel().equals("#AvalonGame" + AVG.getControllerNbr())) {
+                String message = e.getMessage().toUpperCase();
+                if (message.contains("§SHOWQUESTS")){
+                    AVG.displayGameState();
+                }
+            } else {
+                bot.sendMessage(e.getChannel(), "No game currently going on in this channal");
+            }
+        }
+
+    }
+
+}
+
+
+
+
+
+

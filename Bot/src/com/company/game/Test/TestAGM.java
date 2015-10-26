@@ -1,24 +1,11 @@
-package com.company.game.Test;
-
 import com.company.game.*;
 
 public class TestAGM {
 
     public static void main(String[] args) {
 
+
         AvalonGameModel worldA = AvalonGameFactory.createNewGame(5);
-
-        System.out.println("Is the roles list full? " + worldA.isFullRoles());
-
-        System.out.println();
-
-//        worldA.printRoles();
-//        worldA.addSpecialRole();
-//        worldA.addSpecialRole(new Percival());
-//        worldA.addSpecialRole(new Morgana());
-//        worldA.addSpecialRole(new Knight());
-//        System.out.println();
-//        worldA.addSpecialRole(new Knight());
 
         System.out.println();
 
@@ -28,7 +15,26 @@ public class TestAGM {
         worldA.addPlayer("P3");
         worldA.addPlayer("P4");
         worldA.addPlayer("P5");
-        worldA.addPlayer("P5");
+        worldA.distributeRoles();
+        worldA.selectFirstKing();
+
+
+
+       /*       Kollar ifall nestKing() funkar!
+        worldA.setPhase(AvalonGameModel.Phase.DISCUSSION);
+        System.out.println("King is now : " + worldA.getKing().getNick());
+        worldA.nextKing();
+        System.out.println("nextKing() pre phase = vote");
+        System.out.println("King is now : " + worldA.getKing().getNick());
+        worldA.setPhase(AvalonGameModel.Phase.VOTE);
+        worldA.nextKing();
+        System.out.println("nextKing() after phase = vote");
+        System.out.println("King is now : " + worldA.getKing().getNick());
+        */
+
+    }
+}
+/*        worldA.addPlayer("P5");
         worldA.addPlayer("P6");
 
         System.out.println();
@@ -80,3 +86,4 @@ public class TestAGM {
 
     }
 }
+*/

@@ -1,8 +1,8 @@
-import com.company.MyBot;
+import com.company.Bot.MyBot;
 
 public class TestBot {
 
     public static void main(String[] arg) {
-        MyBot bot = new MyBot("irc.chalmers.it", 6667, "Botalon", "banned");
+        new MyBot("irc.chalmers.it", 6667, "Botalon", "bannad");
     }
 }

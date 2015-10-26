@@ -2,9 +2,6 @@ package com.company.Utils;
 
 import java.util.Random;
 
-/**
- * Created by simsund on 9/17/15.
- */
 public class ArrayTools {
     public static void shuffleArray(Object[] ar)
     {

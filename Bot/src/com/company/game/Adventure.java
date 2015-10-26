@@ -24,12 +24,10 @@ public class Adventure {
     }
 
     public void addMember(Player p) {
-        System.out.println(p.getNick() + " added to the fellowship!");
         fellowship.add(p);
     }
 
     public void removeMember(Player player) {
-        System.out.println(player.getNick() + " removed from the fellowship");
         fellowship.remove(player);
     }
 
@@ -37,17 +35,17 @@ public class Adventure {
         return fellowship;
     }
 
-    public void getNicksInFellowship() {
+    public String getNicksInFellowship() {
+        String a = "";
         for (int i = 0; i < fellowship.size(); i++) {
-            System.out.print("  |  " + fellowship.get(i).getNick());
+            a += "  |  " + fellowship.get(i).getNick();
         }
         if (fellowship.size() < quest.getNumberOfKnights()) {
             for (int i = quest.getNumberOfKnights() - fellowship.size(); i > 0; i--) {
-                System.out.print("  |  Empty Slot");
+                a += "  |  Empty Slot";
             }
         }
-        System.out.println("  |");
-
-
+        a += "  |";
+        return a;
     }
 }
